@@ -1,0 +1,52 @@
+{
+  "name": "sitea-forum",
+  "version": "1.0.0",
+  "description": "forum-restAPI",
+  "scripts": {
+    "start": "ts-node --transpile-only -r tsconfig-paths/register src/server.ts",
+    "dev": "nodemon",
+    "lint": "eslint {src,test}/**/*.ts --ext .ts --fix && prettier --write \"{src,test}/**/*.ts\"",
+    "test": "npm run lint && tap --no-ts --node-arg=--require=ts-node/register/transpile-only"
+  },
+  "keywords": ["fastify", "api", "node"],
+  "author": "MRsabs",
+  "license": "MIT",
+  "dependencies": {
+    "connect-redis": "^5.0.0",
+    "fastify": "^3.0.0",
+    "fastify-autoload": "^3.0.2",
+    "fastify-cli": "^2.3.0",
+    "fastify-compress": "^3.3.1",
+    "fastify-cookie": "^4.1.0",
+    "fastify-etag": "^1.0.0",
+    "fastify-formbody": "^5.0.0",
+    "fastify-plugin": "^2.3.0",
+    "fastify-session": "^5.2.0",
+    "mongoose": "^5.10.8",
+    "nanoid": "^3.1.12",
+    "redis": "^3.0.2",
+    "ts-node": "^9.0.0",
+    "tsconfig-paths": "^3.9.0"
+  },
+  "devDependencies": {
+    "@types/connect-redis": "^0.0.14",
+    "@types/mongoose": "^5.7.36",
+    "@types/node": "^14.11.5",
+    "@types/redis": "^2.8.27",
+    "@types/tap": "^14.10.1",
+    "@typescript-eslint/eslint-plugin": "^4.4.0",
+    "@typescript-eslint/parser": "^4.4.0",
+    "eslint": "^7.10.0",
+    "eslint-config-prettier": "^6.12.0",
+    "husky": "^4.3.0",
+    "nodemon": "^2.0.4",
+    "pino-pretty": "^4.3.0",
+    "prettier": "^2.1.2",
+    "tap": "^14.10.8"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pnpm run test"
+    }
+  }
+}

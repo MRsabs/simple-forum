@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "declaration": true,
+    "pretty": true,
+    "noEmitOnError": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "removeComments": true,
+    "newLine": "lf",
+    "noUnusedLocals": true,
+    "noFallthroughCasesInSwitch": true,
+    "useDefineForClassFields": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "lib": ["esnext"],
+    "baseUrl": ".",
+    "paths": {
+      "@app": ["src/app.ts"],
+      "@src/*": ["src/*"],
+      "@routes/*": ["src/routes/*"],
+      "@plugins/*": ["src/plugins/*"]
+    }
+  },
+  "include": ["src/**/*", "test/**/*"],
+}
