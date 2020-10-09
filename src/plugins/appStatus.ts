@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
 import { EventEmitter } from 'events';
 
@@ -46,7 +46,7 @@ class AppStatus {
 
 	private async stopWebServer() {
 		if (this.fastify.server.listening) {
-			this.fastify.server.close((_err) => {
+			this.fastify.server.close(() => {
 				this.fastify.log.info('http server stopped');
 			});
 		}
@@ -74,8 +74,7 @@ class AppStatus {
 			this.fastify.log.info('Mongoose connection is closed due to application termination');
 			this.fastify.redisClient.end(false);
 			this.fastify.log.info('Redis connection is closed due to application termination');
-			await this.fastify.close();
-			this.fastify.log.info('http server stopped');
+			this.stopWebServer();
 		});
 	}
 
@@ -100,6 +99,6 @@ declare module 'fastify' {
 	}
 }
 
-export default fp(async function (fastify: FastifyInstance, opts: FastifyPluginOptions) {
+export default fp(async function (fastify: FastifyInstance) {
 	fastify.decorate('AppStatus', new AppStatus(fastify));
 });
