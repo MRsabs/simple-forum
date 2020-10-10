@@ -6,28 +6,28 @@ const dbURL = 'mongodb://localhost:27017/test';
 export const mongoClient = mongoose.createConnection(dbURL, { useNewUrlParser: true, useUnifiedTopology: true });
 
 declare module 'fastify' {
-	interface FastifyInstance {
-		mongoClient: mongoose.Connection;
-	}
+  interface FastifyInstance {
+    mongoClient: mongoose.Connection;
+  }
 }
 
 export default fp(
-	async function (fastify: FastifyInstance, opts: FastifyPluginOptions) {
-		opts.dependencies = 'AppStatus';
-		fastify.decorate('mongoClient', mongoClient);
-		fastify.mongoClient.on('connected', () => mongoConnnected(fastify));
-		fastify.mongoClient.on('error', (err) => fastify.log.error(`Mongoose connection has occured ${err} error`));
-		fastify.mongoClient.on('disconnected', () => mongoDisconnected(fastify));
-	},
-	{ name: 'mongoClient' }
+  async function (fastify: FastifyInstance, opts: FastifyPluginOptions) {
+    opts.dependencies = 'AppStatus';
+    fastify.decorate('mongoClient', mongoClient);
+    fastify.mongoClient.on('connected', () => mongoConnnected(fastify));
+    fastify.mongoClient.on('error', (err) => fastify.log.error(`Mongoose connection has occured ${err} error`));
+    fastify.mongoClient.on('disconnected', () => mongoDisconnected(fastify));
+  },
+  { name: 'mongoClient' }
 );
 
 function mongoConnnected(fastify: FastifyInstance) {
-	fastify.AppStatus.setMongoStatus = true;
-	fastify.log.info(`Mongoose connection is open to ${dbURL}`);
+  fastify.AppStatus.setMongoStatus = true;
+  fastify.log.info(`Mongoose connection is open to ${dbURL}`);
 }
 
 function mongoDisconnected(fastify: FastifyInstance) {
-	fastify.AppStatus.setMongoStatus = false;
-	fastify.log.warn(`Mongoose connection is disconnected`);
+  fastify.AppStatus.setMongoStatus = false;
+  fastify.log.warn(`Mongoose connection is disconnected`);
 }
