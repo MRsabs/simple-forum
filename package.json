@@ -5,8 +5,8 @@
   "scripts": {
     "start": "NODE_ENV=production ts-node --transpile-only -r tsconfig-paths/register src/server.ts",
     "dev": "NODE_ENV=development nodemon",
-    "lint": "eslint {src,test}/**/*.ts --ext .ts --fix && prettier --write \"{src,test}/**/*.ts\"",
-    "pretest": "pnpm run lint",
+    "lint": "prettier --write \"{src,test}/**/*.ts\" && eslint {src,test}/**/* --ext .ts --fix",
+    "pretest": "eslint {src,test}/**/* --ext .ts",
     "test": "NODE_ENV=test tap --no-ts  --node-arg=--require=ts-node/register/transpile-only --node-arg=--require=tsconfig-paths/register"
   },
   "keywords": [
@@ -46,6 +46,7 @@
     "@typescript-eslint/parser": "^4.4.0",
     "eslint": "^7.10.0",
     "eslint-config-prettier": "^6.12.0",
+    "eslint-plugin-prettier": "^3.1.4",
     "faker": "^5.1.0",
     "husky": "^4.3.0",
     "nodemon": "^2.0.4",
