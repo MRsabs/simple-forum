@@ -5,10 +5,24 @@ import fastifyFormbody from 'fastify-formbody';
 import fastifyCompress from 'fastify-compress';
 import fastifyEtag from 'fastify-etag';
 import fastifyCookie from 'fastify-cookie';
-console.log(process.env.NODE_ENV);
 
-export default function (opts: FastifyServerOptions): FastifyInstance {
+export default function (): FastifyInstance {
+  let opts: FastifyServerOptions;
+  switch (process.env.NODE_ENV?.trim()) {
+    case 'development':
+      opts = options.development;
+      break;
+    case 'test':
+      opts = options.test;
+      break;
+    case 'production':
+      opts = options.production;
+      break;
+    default:
+      process.exit(1);
+  }
   const app = fastify(opts);
+  app.log.info(`in ${process.env.NODE_ENV} mode`);
   app.register(fastifyFormbody);
   app.register(fastifyCompress, { global: true });
   app.register(fastifyEtag);
@@ -24,3 +38,26 @@ export default function (opts: FastifyServerOptions): FastifyInstance {
   });
   return app;
 }
+
+const options: { development: FastifyServerOptions; test: FastifyServerOptions; production: FastifyServerOptions } = {
+  production: {
+    logger: {
+      prettyPrint: false,
+    },
+    trustProxy: '127.0.0.1',
+  },
+  development: {
+    logger: {
+      prettyPrint: true,
+      // @ts-ignore
+      file: path.join(__dirname, '../logs/development.log'),
+    },
+  },
+  test: {
+    logger: {
+      prettyPrint: true,
+      // @ts-ignore
+      file: path.join(__dirname, '../logs/test.log'),
+    },
+  },
+};
