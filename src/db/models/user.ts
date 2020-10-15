@@ -33,7 +33,7 @@ export default USER;
 
 export interface IUser extends Document {
   email: string;
-  firstName: string;
-  lastName: string;
+  username: string;
+  password: string;
   avatar?: string;
 }
