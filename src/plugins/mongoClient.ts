@@ -3,7 +3,13 @@ import { FastifyInstance, FastifyPluginOptions } from 'fastify';
 import fp from 'fastify-plugin';
 
 const dbURL = 'mongodb://localhost:27017/test';
-export const mongoClient = mongoose.createConnection(dbURL, { useNewUrlParser: true, useUnifiedTopology: true });
+export const mongoClient = mongoose.createConnection(dbURL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  autoReconnect: process.env.NODE_ENV === 'test' ? false : true,
+  bufferCommands: process.env.NODE_ENV === 'test' ? false : true,
+});
 
 declare module 'fastify' {
   interface FastifyInstance {
