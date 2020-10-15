@@ -8,7 +8,12 @@ const PostSchema: Schema = new Schema({
     type: String,
     default: () => nanoid(),
   },
-  author: {
+  author: { type: String, ref: 'User' },
+  title: {
+    type: String,
+    required: true,
+  },
+  slug: {
     type: String,
     required: true,
   },
