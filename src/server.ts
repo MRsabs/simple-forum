@@ -1,10 +1,6 @@
 import app from './app';
 
-const fastify = app({
-  logger: {
-    prettyPrint: true,
-  },
-});
+const fastify = app();
 
 fastify.ready((err) => {
   if (err) {
