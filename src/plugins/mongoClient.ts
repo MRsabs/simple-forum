@@ -7,7 +7,6 @@ export const mongoClient = mongoose.createConnection(dbURL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
-  autoReconnect: process.env.NODE_ENV === 'test' ? false : true,
   bufferCommands: process.env.NODE_ENV === 'test' ? false : true,
 });
 
