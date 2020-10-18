@@ -49,8 +49,6 @@ const options: { development: FastifyServerOptions; test: FastifyServerOptions; 
   development: {
     logger: {
       prettyPrint: true,
-      // @ts-ignore
-      file: path.join(__dirname, '../logs/development.log'),
     },
   },
   test: {
