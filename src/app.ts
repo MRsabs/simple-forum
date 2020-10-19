@@ -7,20 +7,7 @@ import fastifyEtag from 'fastify-etag';
 import fastifyCookie from 'fastify-cookie';
 
 export default function (): FastifyInstance {
-  let opts: FastifyServerOptions;
-  switch (process.env.NODE_ENV?.trim()) {
-    case 'development':
-      opts = options.development;
-      break;
-    case 'test':
-      opts = options.test;
-      break;
-    case 'production':
-      opts = options.production;
-      break;
-    default:
-      process.exit(1);
-  }
+  const opts = envConfig();
   const app = fastify(opts);
   app.log.info(`in ${process.env.NODE_ENV} mode`);
   app.register(fastifyFormbody);
@@ -37,6 +24,25 @@ export default function (): FastifyInstance {
     ignorePattern: /.*(test|spec).ts/,
   });
   return app;
+}
+
+function envConfig(): FastifyServerOptions {
+  let res: FastifyServerOptions;
+  switch (process.env.NODE_ENV) {
+    case 'development':
+      res = options.development;
+      break;
+    case 'test':
+      res = options.test;
+      break;
+    case 'production':
+      res = options.production;
+      break;
+    default:
+      res = options.development;
+      break;
+  }
+  return res;
 }
 
 const options: { development: FastifyServerOptions; test: FastifyServerOptions; production: FastifyServerOptions } = {
