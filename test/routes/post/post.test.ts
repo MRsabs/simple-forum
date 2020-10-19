@@ -3,6 +3,7 @@ import tap from 'tap';
 const fastify = buildFastify();
 tap.tearDown(async () => {
   await fastify.mongoClient.model('User').findOneAndDelete({ username: 'posttest' });
+  await fastify.mongoClient.dropCollection('posts');
   fastify.redisClient.end(true);
   fastify.mongoClient.close();
 });
@@ -67,11 +68,18 @@ tap.test('add a post', async (t) => {
   t.end();
 });
 
-tap.test('add a post', async (t) => {
+tap.test('post not found', async (t) => {
+  const getPost = await fastify.inject().get('/post/notfound').end();
+  t.deepEqual(getPost.statusCode, 404, getPost.body);
+  t.deepEqual(JSON.parse(getPost.body), { msg: 'Not found' }, getPost.body);
+  t.end();
+});
+
+tap.test('adding comment & reply', async (t) => {
   await fastify.ready();
   const getPost = await fastify.inject().get('/post/post-test-title').end();
   t.deepEqual(getPost.statusCode, 200, getPost.body);
-  const postId = JSON.parse(getPost.body).id;
+  const postId = JSON.parse(getPost.body).data.id;
 
   t.test('add comment', async (t) => {
     const addComment = await fastify
