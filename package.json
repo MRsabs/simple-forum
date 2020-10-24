@@ -19,6 +19,7 @@
   "dependencies": {
     "bcrypt": "^5.0.0",
     "connect-redis": "^5.0.0",
+    "date-fns": "^2.16.1",
     "fastify": "^3.0.0",
     "fastify-autoload": "^3.0.2",
     "fastify-cli": "^2.3.0",
