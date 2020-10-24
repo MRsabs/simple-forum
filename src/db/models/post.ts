@@ -1,12 +1,17 @@
 import { mongoClient } from '@src/plugins/mongoClient';
 import { Document, Schema, Types } from 'mongoose';
 import { nanoid } from 'nanoid';
+import { getUnixTime } from 'date-fns';
 import CommentSchema, { IReply } from './comment';
 
 const PostSchema: Schema = new Schema({
   _id: {
     type: String,
     default: () => nanoid(),
+  },
+  createdAt: {
+    type: Number,
+    default: () => getUnixTime(new Date()),
   },
   author: { type: String, ref: 'User' },
   title: {
@@ -36,6 +41,7 @@ export default POST;
 export interface IPost extends Document {
   author: string;
   content: string;
-  votes?: number;
+  votes: number;
+  createdAt: number;
   comments: Types.DocumentArray<IReply>;
 }
