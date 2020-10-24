@@ -69,7 +69,8 @@ class RegisterHandler {
     try {
       this.body.password = await bcrypt.hash(this.body.password, 10);
       const { email, username, password } = this.body;
-      const user = new USER({ email, username, password });
+      const slug = username.replace(/ /g, '-');
+      const user = new USER({ email, username, password, slug });
       await user.save();
     } catch (error) {
       this.log.error(error);
