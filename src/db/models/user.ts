@@ -1,4 +1,5 @@
 import { mongoClient } from '@src/plugins/mongoClient';
+import { getUnixTime } from 'date-fns';
 import { Document, Schema } from 'mongoose';
 import { nanoid } from 'nanoid';
 
@@ -6,6 +7,10 @@ const UserSchema: Schema = new Schema({
   _id: {
     type: String,
     default: () => nanoid(),
+  },
+  createdAt: {
+    type: Number,
+    default: () => getUnixTime(new Date()),
   },
   email: {
     type: String,
@@ -25,6 +30,10 @@ const UserSchema: Schema = new Schema({
     type: String,
     default: null,
   },
+  slug: {
+    type: String,
+    required: true,
+  },
 });
 
 const USER = mongoClient.model<IUser>('User', UserSchema);
@@ -35,5 +44,7 @@ export interface IUser extends Document {
   email: string;
   username: string;
   password: string;
-  avatar?: string;
+  avatar: string;
+  slug: string;
+  createdAt: number;
 }
