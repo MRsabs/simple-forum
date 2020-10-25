@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
 import { EventEmitter } from 'events';
+import config from 'config';
 
 class AppStatus {
   private mongoStatus: boolean;
@@ -54,8 +55,9 @@ class AppStatus {
 
   private startWebServer() {
     if (!this.fastify.server.listening && this.shouldStart) {
-      this.fastify.server.listen(3000, () => {
-        this.fastify.log.info('http server started');
+      const port = config.get('HTTP_PORT');
+      this.fastify.server.listen(port, () => {
+        this.fastify.log.info(`http server started on ${port}`);
       });
     }
   }

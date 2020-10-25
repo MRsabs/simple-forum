@@ -49,6 +49,8 @@ const options: { development: FastifyServerOptions; test: FastifyServerOptions; 
   production: {
     logger: {
       prettyPrint: false,
+      // @ts-ignore
+      file: path.join(__dirname, '../production.log'),
     },
     trustProxy: '127.0.0.1',
   },
@@ -61,7 +63,7 @@ const options: { development: FastifyServerOptions; test: FastifyServerOptions; 
     logger: {
       prettyPrint: true,
       // @ts-ignore
-      file: path.join(__dirname, '../logs/test.log'),
+      file: path.join(__dirname, '../test.log'),
     },
   },
 };

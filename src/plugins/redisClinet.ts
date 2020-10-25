@@ -1,10 +1,9 @@
-// @ts-nocheck
-
 import { FastifyInstance, FastifyPluginOptions } from 'fastify';
 import fp from 'fastify-plugin';
 import redis from 'redis';
+import config from 'config';
 
-const dbURL = 'redis://127.0.0.1:6379';
+const dbURL = config.get('REDIS_URL') as string;
 const redisClient = redis.createClient({ url: dbURL });
 
 declare module 'fastify' {

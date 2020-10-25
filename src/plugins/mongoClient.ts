@@ -1,8 +1,9 @@
 import mongoose from 'mongoose';
+import config from 'config';
 import { FastifyInstance, FastifyPluginOptions } from 'fastify';
 import fp from 'fastify-plugin';
 
-const dbURL = 'mongodb://localhost:27017/test';
+const dbURL = config.get('MONGO_URL') as string;
 export const mongoClient = mongoose.createConnection(dbURL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
