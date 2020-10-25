@@ -76,6 +76,19 @@ tap.test('adding comment & reply', async (t) => {
   const postId = JSON.parse(getPost.body).data.id;
 
   t.test('add comment', async (t) => {
+    const invalidComment = await fastify.inject().post('/post/thread/comment').cookies({ sid: cookie }).body({}).end();
+    t.deepEqual(invalidComment.statusCode, 400, invalidComment.body);
+    t.deepEqual(JSON.parse(invalidComment.body), { msg: 'Invalid' }, invalidComment.body);
+
+    const postDoesNotExist = await fastify
+      .inject()
+      .post('/post/thread/comment')
+      .cookies({ sid: cookie })
+      .body({ id: 'notfound', content: 'a comment' })
+      .end();
+    t.deepEqual(postDoesNotExist.statusCode, 404, postDoesNotExist.body);
+    t.deepEqual(JSON.parse(postDoesNotExist.body), { msg: 'Not found' }, postDoesNotExist.body);
+
     const addComment = await fastify
       .inject()
       .post('/post/thread/comment')
