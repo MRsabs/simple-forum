@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "forum-restAPI",
   "scripts": {
-    "start": "NODE_ENV=production ts-node --transpile-only -r tsconfig-paths/register src/server.ts",
+    "start": "NODE_ENV=production ts-node-transpile-only src/cluster.ts",
     "dev": "NODE_ENV=development nodemon",
     "lint": "prettier --write \"{src,test}/**/*.ts\" && eslint {src,test}/**/* --ext .ts --fix",
     "pretest": "eslint {src,test}/**/* --ext .ts",
