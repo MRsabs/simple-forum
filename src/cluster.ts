@@ -1,7 +1,7 @@
 import cluster from 'cluster';
 
 const PATH_TO_SERVER_APP = __dirname + '/server.ts';
-const NUM_WORKERS = 4;
+const NUM_WORKERS = 1;
 const workers: { [key: string]: cluster.Worker } = {};
 
 cluster.setupMaster({

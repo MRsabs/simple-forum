@@ -13,7 +13,7 @@ dependencies:
   fastify-plugin: 2.3.4
   fastify-session: 5.2.0
   joi: 17.2.1
-  mongoose: 5.10.8_mongoose@5.10.8
+  mongoose: 5.10.8
   nanoid: 3.1.12
   redis: 3.0.2
   ts-node: 9.0.0
@@ -37,7 +37,7 @@ devDependencies:
   pino-pretty: 4.3.0
   prettier: 2.1.2
   tap: 14.10.8
-lockfileVersion: 5.1
+lockfileVersion: 5.2
 packages:
   /@babel/code-frame/7.10.4:
     dependencies:
@@ -3136,13 +3136,13 @@ packages:
       integrity: sha512-sSZOb04w3HcnrrXC82NEh/YGCmBuRgR+C1hZgmmv4L6dBz4BkRse6Y8/q/neXer9i95fKUBbFi4KgeceXmbsOA==
   /mongoose-legacy-pluralize/1.0.2_mongoose@5.10.8:
     dependencies:
-      mongoose: 5.10.8_mongoose@5.10.8
+      mongoose: 5.10.8
     dev: false
     peerDependencies:
       mongoose: '*'
     resolution:
       integrity: sha512-Yo/7qQU4/EyIS8YDFSeenIvXxZN+ld7YdV9LqFVQJzTLye8unujAWPZ4NWKfFA+RNjh+wvTWKY9Z3E5XM6ZZiQ==
-  /mongoose/5.10.8_mongoose@5.10.8:
+  /mongoose/5.10.8:
     dependencies:
       bson: 1.1.5
       kareem: 2.3.1
@@ -3158,8 +3158,6 @@ packages:
     dev: false
     engines:
       node: '>=4.0.0'
-    peerDependencies:
-      mongoose: '*'
     resolution:
       integrity: sha512-hbpFhOU6rWkWPkekUeSJxqWwzsjVQZ9xPg4WmWA1HJ8YDvjyNye1xbp82fw67BpnyvcjHxyU3/YhujsOCx55yw==
   /mpath/0.7.0:
