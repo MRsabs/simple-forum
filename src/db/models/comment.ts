@@ -1,3 +1,4 @@
+import { getUnixTime } from 'date-fns';
 import { Schema, Types } from 'mongoose';
 import { nanoid } from 'nanoid';
 
@@ -5,6 +6,10 @@ const CommentSchema = new Schema({
   _id: {
     type: String,
     default: () => nanoid(),
+  },
+  createdAt: {
+    type: Number,
+    default: () => getUnixTime(new Date()),
   },
   author: {
     type: String,
@@ -33,5 +38,6 @@ export interface IReply extends Types.Embedded {
   content: string;
   votes?: number;
   line: string;
+  createdAt: number;
   comments: Types.DocumentArray<IReply>;
 }
