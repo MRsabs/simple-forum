@@ -2,7 +2,6 @@ import { FastifyInstance, FastifyPluginOptions } from 'fastify';
 import fp from 'fastify-plugin';
 import fastifySession from 'fastify-session';
 import connectRedis from 'connect-redis';
-
 //@ts-expect-error
 const RedisStore = connectRedis(fastifySession);
 
@@ -18,8 +17,9 @@ export default fp(async function (fastify: FastifyInstance, opts: FastifyPluginO
     }),
     cookieName: 'sid',
     cookie: {
-      secure: false,
-      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production' ? true : false,
+      httpOnly: true,
+      sameSite: true,
       // domain: "localhost",
       // path: "/",
     },
