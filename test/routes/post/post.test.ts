@@ -73,7 +73,7 @@ tap.test('adding comment & reply', async (t) => {
   await fastify.ready();
   const getPost = await fastify.inject().get('/post/post-test-title').end();
   t.deepEqual(getPost.statusCode, 200, getPost.body);
-  const postId = JSON.parse(getPost.body).data.id;
+  const postId = JSON.parse(getPost.body).id;
 
   t.test('add comment', async (t) => {
     const invalidComment = await fastify.inject().post('/post/thread/comment').cookies({ sid: cookie }).body({}).end();
