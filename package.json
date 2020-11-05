@@ -26,6 +26,7 @@
     "fastify-cli": "^2.3.0",
     "fastify-compress": "^3.3.1",
     "fastify-cookie": "^4.1.0",
+    "fastify-cors": "^4.1.0",
     "fastify-etag": "^1.0.0",
     "fastify-formbody": "^5.0.0",
     "fastify-plugin": "^2.3.0",

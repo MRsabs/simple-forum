@@ -5,6 +5,7 @@ import fastifyFormbody from 'fastify-formbody';
 import fastifyCompress from 'fastify-compress';
 import fastifyEtag from 'fastify-etag';
 import fastifyCookie from 'fastify-cookie';
+// import fastifyCors from 'fastify-cors';
 
 export default function (): FastifyInstance {
   const opts = envConfig();
@@ -12,6 +13,7 @@ export default function (): FastifyInstance {
   app.log.info(`in ${process.env.NODE_ENV} mode`);
   app.register(fastifyFormbody);
   app.register(fastifyCompress, { global: true });
+  // app.register(fastifyCors, { origin: ['https://sitea.com', 'https://forum.sitea.com', 'https://blog.sitea.com'] });
   app.register(fastifyEtag);
   app.register(fastifyCookie);
   app.register(AutoLoad, {
