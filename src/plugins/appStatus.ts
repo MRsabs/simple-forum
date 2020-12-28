@@ -37,8 +37,27 @@ class AppStatus {
     }
   }
 
-  private checkExternals() {
+  isAppReady() {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        reject('something wrong with external services');
+      }, 30000);
+      this.status.on('external', () => {
+        this.isExternalsReady() ? resolve() : undefined;
+      });
+    });
+  }
+
+  private isExternalsReady() {
     if (!this.isMongoClientReady() || !this.isRedisClientReady()) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  private checkExternals() {
+    if (this.isExternalsReady()) {
       this.stopWebServer();
     } else {
       this.startWebServer();
