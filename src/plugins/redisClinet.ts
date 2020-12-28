@@ -20,7 +20,7 @@ export default fp(
     fastify.redisClient.on('error', (err) => fastify.log.error(`Redis connection has occured ${err}`));
     fastify.redisClient.on('end', () => redisDisconnected(fastify));
   },
-  { name: 'redisClient' }
+  { name: 'redisClient' },
 );
 
 function redisConnnected(fastify: FastifyInstance) {

@@ -25,7 +25,7 @@ export default fp(
     fastify.mongoClient.on('error', (err) => fastify.log.error(`Mongoose connection has occured ${err} error`));
     fastify.mongoClient.on('disconnected', () => mongoDisconnected(fastify));
   },
-  { name: 'mongoClient' }
+  { name: 'mongoClient' },
 );
 
 function mongoConnnected(fastify: FastifyInstance) {

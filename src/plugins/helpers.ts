@@ -16,7 +16,7 @@ export default fp(
   async function (fastify: FastifyInstance) {
     fastify.decorate('helpers', new Helpers());
   },
-  { name: 'helpers' }
+  { name: 'helpers' },
 );
 
 declare module 'fastify' {
