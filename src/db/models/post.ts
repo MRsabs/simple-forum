@@ -31,7 +31,10 @@ const PostSchema: Schema = new Schema({
     default: 0,
   },
   comments: [CommentSchema],
-  media: [String],
+  media: {
+    type: [String],
+    default: [],
+  },
 });
 
 const POST = mongoClient.model<IPost>('Post', PostSchema);
