@@ -129,15 +129,15 @@ export default async function (fastify: FastifyInstance): Promise<void> {
   fastify.post('/', async (request, reply) => {
     const handler = new Commenthandler(request.body as RequestBody, request.session.userId, fastify.log);
     if (!(await handler.isReplyValid())) {
-      reply.status(handler.errorReply.status).send({ msg: handler.errorReply.msg });
+      return reply.status(handler.errorReply.status).send({ msg: handler.errorReply.msg });
     }
     if (!(await handler.isPostExist())) {
-      reply.status(handler.errorReply.status).send({ msg: handler.errorReply.msg });
+      return reply.status(handler.errorReply.status).send({ msg: handler.errorReply.msg });
     }
     if (!(await handler.isCommentOrReplySaved())) {
-      reply.status(handler.errorReply.status).send({ msg: handler.errorReply.msg });
+      return reply.status(handler.errorReply.status).send({ msg: handler.errorReply.msg });
     }
-    reply.status(200).send({ msg: 'ok' });
+    return reply.status(200).send({ msg: 'ok' });
   });
 }
 
