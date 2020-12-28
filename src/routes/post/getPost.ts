@@ -57,6 +57,8 @@ class GetPostHandler {
           status: 200,
           data: {
             id: data._id,
+            createdAt: data.createdAt,
+            slug: data.slug,
             title: data.title,
             content: data.content,
             comments: data.comments,
@@ -82,7 +84,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
     if (!(await handler.isOk())) {
       return reply.status(handler.errorReply.status).send({ msg: handler.errorReply.msg });
     } else {
-      return reply.status(handler.reply.status).send({ data: handler.reply.data });
+      return reply.status(handler.reply.status).send({ ...handler.reply.data });
     }
   });
 }
@@ -97,6 +99,7 @@ interface PostComments {
   content: string;
   line: string;
   _id: string;
+  createdAt: number;
   comments: PostComments[];
 }
 
@@ -104,7 +107,9 @@ interface PostData {
   id: string;
   title: string;
   content: string;
-  comments: PostComments;
+  comments: PostComments[];
+  slug: string;
+  createdAt: number;
   author: { username: string; avatar: string };
 }
 
