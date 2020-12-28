@@ -5,7 +5,7 @@ import { FastifyInstance, FastifyLoggerInstance } from 'fastify';
 import Joi from 'joi';
 
 const commentValidition = Joi.object({
-  id: Joi.string().max(30).required(),
+  slug: Joi.string().max(30).required(),
   line: Joi.string().required(),
   content: Joi.string().max(1000).required(),
 });
@@ -34,7 +34,7 @@ class Commenthandler {
   }
 
   async isPostExist(): Promise<boolean> {
-    const post = await POST.findOne({ _id: this.body.id });
+    const post = await POST.findOne({ slug: this.body.slug });
     if (!post) {
       this.errorReply = {
         msg: 'Not found',
@@ -63,6 +63,10 @@ class Commenthandler {
     }
   }
 
+  async isCommentOrReplySaved() {
+    return this.body.line === '-1' ? await this.isCommentSaved() : await this.isReplySaved();
+  }
+
   private parseLines(line: string): false | IReply {
     const parsedLine = line.split('');
     let target: IReply;
@@ -81,7 +85,7 @@ class Commenthandler {
       return false;
     }
   }
-  async isReplySaved(): Promise<boolean> {
+  private async isReplySaved(): Promise<boolean> {
     try {
       // TODO fix
       const commenter = await this.getCommenterData();
@@ -101,11 +105,28 @@ class Commenthandler {
       return false;
     }
   }
+  private async isCommentSaved(): Promise<boolean> {
+    try {
+      const line = '' + this.post.comments.length;
+      const commenter = await this.getCommenterData();
+      if (commenter) {
+        this.post.comments.push({ author: commenter.username, content: this.body.content, line });
+        await this.post.save();
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      this.log.error(error);
+      this.errorReply = { status: 500, msg: 'Something went wrong' };
+      return false;
+    }
+  }
 }
 
 export default async function (fastify: FastifyInstance): Promise<void> {
   fastify.addHook('preHandler', (request, reply) => fastify.helpers.isAuthenticated(request, reply));
-  fastify.post('/reply', async (request, reply) => {
+  fastify.post('/', async (request, reply) => {
     const handler = new Commenthandler(request.body as RequestBody, request.session.userId, fastify.log);
     if (!(await handler.isReplyValid())) {
       reply.status(handler.errorReply.status).send({ msg: handler.errorReply.msg });
@@ -113,7 +134,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
     if (!(await handler.isPostExist())) {
       reply.status(handler.errorReply.status).send({ msg: handler.errorReply.msg });
     }
-    if (!(await handler.isReplySaved())) {
+    if (!(await handler.isCommentOrReplySaved())) {
       reply.status(handler.errorReply.status).send({ msg: handler.errorReply.msg });
     }
     reply.status(200).send({ msg: 'ok' });
@@ -121,7 +142,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 }
 
 interface RequestBody {
-  id: string;
+  slug: string;
   line: string;
   content: string;
 }
