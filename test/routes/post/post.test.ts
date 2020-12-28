@@ -21,7 +21,6 @@ tap.test('register and login a temp user', async (t) => {
   t.deepEqual(login.statusCode, 200, login.body);
   // @ts-ignore
   cookie = login.cookies[0].value;
-  t.deepEqual(JSON.parse(login.body), { msg: 'ok' }, login.body);
   t.end();
 });
 
@@ -73,27 +72,27 @@ tap.test('adding comment & reply', async (t) => {
   await fastify.ready();
   const getPost = await fastify.inject().get('/post/post-test-title').end();
   t.deepEqual(getPost.statusCode, 200, getPost.body);
-  const postId = JSON.parse(getPost.body).id;
+  const postSlug = JSON.parse(getPost.body).slug;
 
   t.test('add comment', async (t) => {
-    const invalidComment = await fastify.inject().post('/post/thread/comment').cookies({ sid: cookie }).body({}).end();
+    const invalidComment = await fastify.inject().post('/post/thread').cookies({ sid: cookie }).body({}).end();
     t.deepEqual(invalidComment.statusCode, 400, invalidComment.body);
     t.deepEqual(JSON.parse(invalidComment.body), { msg: 'Invalid' }, invalidComment.body);
 
     const postDoesNotExist = await fastify
       .inject()
-      .post('/post/thread/comment')
+      .post('/post/thread')
       .cookies({ sid: cookie })
-      .body({ id: 'notfound', content: 'a comment' })
+      .body({ slug: 'notfound', content: 'a comment', line: '-1' })
       .end();
     t.deepEqual(postDoesNotExist.statusCode, 404, postDoesNotExist.body);
     t.deepEqual(JSON.parse(postDoesNotExist.body), { msg: 'Not found' }, postDoesNotExist.body);
 
     const addComment = await fastify
       .inject()
-      .post('/post/thread/comment')
+      .post('/post/thread')
       .cookies({ sid: cookie })
-      .body({ id: postId, content: 'a comment' })
+      .body({ slug: postSlug, content: 'a comment', line: '-1' })
       .end();
     t.deepEqual(addComment.statusCode, 200, addComment.body);
     t.end();
@@ -102,9 +101,9 @@ tap.test('adding comment & reply', async (t) => {
   t.test('add reply', async (t) => {
     const addReply = await fastify
       .inject()
-      .post('/post/thread/reply')
+      .post('/post/thread')
       .cookies({ sid: cookie })
-      .body({ id: postId, line: '0', content: 'a reply' })
+      .body({ slug: postSlug, line: '0', content: 'a reply' })
       .end();
     t.deepEqual(addReply.statusCode, 200, addReply.body);
     t.end();

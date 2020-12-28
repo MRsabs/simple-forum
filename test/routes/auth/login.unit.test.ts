@@ -39,6 +39,7 @@ tap.test('isUserExist', async (t) => {
     repeatPassword: 'pass123',
   };
   await fastify.ready();
+  await fastify.AppStatus.isAppReady();
   function loginHandler(opt?: { key: 'email' | 'password'; value: string }) {
     const body = defultBody;
     if (!opt) {

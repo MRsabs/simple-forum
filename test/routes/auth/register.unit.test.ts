@@ -43,6 +43,7 @@ tap.test('isUserSaved & isUserExist', async (t) => {
     repeatPassword: 'pass123',
   };
   await fastify.ready();
+  await fastify.AppStatus.isAppReady();
   function isUserSaved() {
     // @ts-ignore
     const handler = new RegisterHandler(defultBody, fastify.log);
@@ -73,7 +74,6 @@ tap.test('isUserSaved & isUserExist', async (t) => {
   } catch (error) {
     t.pass(error);
   }
-
   await fastify.mongoClient.model('User').findOneAndDelete({ username: 'registerunittest' });
   t.end();
 });
