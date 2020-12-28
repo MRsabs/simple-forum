@@ -11,8 +11,8 @@ const userLoginSchema = Joi.object({
 class LoginHandler {
   private body: RequestBody;
   private log: FastifyLoggerInstance;
-  private dbUser!: IUser | null;
-  public userId!: string;
+  dbUser!: IUser | null;
+  userId!: string;
   errorReply: { status: number; msg: string };
   constructor(body: RequestBody, log: FastifyLoggerInstance) {
     this.body = body;
@@ -99,7 +99,13 @@ export default async function (fastify: FastifyInstance): Promise<void> {
     }
     request.session.userId = handler.userId;
     request.session.authenticated = true;
-    return reply.status(200).send({ msg: 'ok' });
+    const { username, avatar, _id, slug } = (handler.dbUser as IUser).toObject();
+    return reply.status(200).send({
+      username,
+      avatar,
+      id: _id,
+      slug,
+    });
   });
 }
 
