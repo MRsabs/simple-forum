@@ -5,7 +5,11 @@ import { FastifyInstance } from 'fastify';
 export default async function (fastify: FastifyInstance): Promise<void> {
   fastify.get('/', async function (request, reply) {
     try {
-      const posts = await POST.find().limit(2).sort({ createdAt: -1 });
+      const load = request.query.load || 0;
+      const posts = await POST.find()
+        .skip(load * 4)
+        .limit(4)
+        .sort({ createdAt: -1 });
       for (let i = 0; i < posts.length; i++) {
         await posts[i].populate('author').execPopulate();
         posts[i] = posts[i].toObject();
