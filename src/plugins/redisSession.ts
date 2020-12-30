@@ -21,7 +21,7 @@ export default fp(async function (fastify: FastifyInstance, opts: FastifyPluginO
       httpOnly: true,
       sameSite: true,
       // domain: "localhost",
-      // path: "/",
+      path: '/',
     },
   });
 });
