@@ -1,16 +1,12 @@
+import fastify, { FastifyInstance, FastifyServerOptions } from 'fastify';
 import path from 'path';
 import AutoLoad from 'fastify-autoload';
-import fastify, { FastifyInstance, FastifyServerOptions } from 'fastify';
-import fastifyFormbody from 'fastify-formbody';
 import fastifyCookie from 'fastify-cookie';
-// import fastifyCors from 'fastify-cors';
 
 export default function (): FastifyInstance {
   const opts = envConfig();
   const app = fastify(opts);
   app.log.info(`in ${process.env.NODE_ENV} mode`);
-  app.register(fastifyFormbody);
-  // app.register(fastifyCors, { origin: ['https://sitea.com', 'https://forum.sitea.com', 'https://blog.sitea.com'] });
   app.register(fastifyCookie);
   app.register(AutoLoad, {
     dir: path.join(__dirname, 'plugins'),
