@@ -7,7 +7,7 @@
     "dev": "NODE_ENV=development nodemon",
     "lint": "prettier --write \"{src,test}/**/*.ts\" && eslint {src,test}/**/* --ext .ts --fix",
     "pretest": "eslint {src,test}/**/* --ext .ts",
-    "test": "NODE_ENV=test tap --no-ts  --node-arg=--require=ts-node/register/transpile-only --node-arg=--require=tsconfig-paths/register"
+    "test": "NODE_ENV=test tap --before=./dropdb.js --timeout 0 --no-ts  --node-arg=--require=ts-node/register/transpile-only --node-arg=--require=tsconfig-paths/register"
   },
   "keywords": [
     "fastify",
@@ -19,28 +19,25 @@
   "dependencies": {
     "bcrypt": "^5.0.0",
     "config": "^3.3.2",
-    "connect-redis": "^5.0.0",
     "date-fns": "^2.16.1",
     "fastify": "^3.0.0",
     "fastify-autoload": "^3.0.2",
     "fastify-cli": "^2.3.0",
     "fastify-cookie": "^4.1.0",
     "fastify-plugin": "^2.3.0",
-    "fastify-session": "^5.2.0",
+    "fastify-secure-session": "^2.3.0",
     "joi": "^17.2.1",
     "mongoose": "^5.10.8",
+    "fastify-formbody": "^5.0.0",
     "nanoid": "^3.1.12",
-    "redis": "^3.0.2",
     "ts-node": "^9.0.0",
     "tsconfig-paths": "^3.9.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
     "@types/config": "^0.0.36",
-    "@types/connect-redis": "^0.0.14",
     "@types/mongoose": "^5.7.36",
     "@types/node": "^14.11.5",
-    "@types/redis": "^2.8.27",
     "@types/tap": "^14.10.1",
     "@typescript-eslint/eslint-plugin": "^4.4.0",
     "@typescript-eslint/parser": "^4.4.0",

@@ -1,27 +1,24 @@
 dependencies:
   bcrypt: 5.0.0
   config: 3.3.2
-  connect-redis: 5.0.0
   date-fns: 2.16.1
   fastify: 3.5.1
   fastify-autoload: 3.3.0
   fastify-cli: 2.3.0
   fastify-cookie: 4.1.0
+  fastify-formbody: 5.0.0
   fastify-plugin: 2.3.4
-  fastify-session: 5.2.0
+  fastify-secure-session: 2.3.0
   joi: 17.2.1
   mongoose: 5.10.8
   nanoid: 3.1.12
-  redis: 3.0.2
   ts-node: 9.0.0
   tsconfig-paths: 3.9.0
 devDependencies:
   '@types/bcrypt': 3.0.0
   '@types/config': 0.0.36
-  '@types/connect-redis': 0.0.14
   '@types/mongoose': 5.7.36
   '@types/node': 14.11.7
-  '@types/redis': 2.8.27
   '@types/tap': 14.10.1
   '@typescript-eslint/eslint-plugin': 4.4.0_108c904d7283083cfe52d90542869a7f
   '@typescript-eslint/parser': 4.4.0_eslint@7.10.0
@@ -369,13 +366,6 @@ packages:
     dev: true
     resolution:
       integrity: sha512-nohgNyv+1ViVcubKBh0+XiNJ3dO8nYu///9aJ4cgSqv70gBL+94SNy/iC2NLzKPT2Zt/QavrOkBVbZRLZmw6NQ==
-  /@types/body-parser/1.19.0:
-    dependencies:
-      '@types/connect': 3.4.33
-      '@types/node': 14.11.7
-    dev: true
-    resolution:
-      integrity: sha512-W98JrE0j2K78swW4ukqMleo8R7h/pFETjM2DQ90MF6XK2i4LO4W3gQ71Lt4w3bfm2EvVSyWHplECvB5sK22yFQ==
   /@types/bson/4.0.2:
     dependencies:
       '@types/node': 14.11.7
@@ -386,51 +376,6 @@ packages:
     dev: true
     resolution:
       integrity: sha512-EoAeT1MyFWh2BJvBDEFInY714bQBbHOAucqxqqhprhbBFqr+B7fuN5T9CJqUIGDzvwubnKKRqmSo6yPo0aSpNw==
-  /@types/connect-redis/0.0.14:
-    dependencies:
-      '@types/express': 4.17.8
-      '@types/express-session': 1.17.0
-      '@types/ioredis': 4.17.4
-      '@types/redis': 2.8.27
-    dev: true
-    resolution:
-      integrity: sha512-snjiYYc1TUk4iJvwO41omcrZKBB0mdwMvl718m7zZj5Tz7qBqjTNS23KQdHF2QmJX/x40m1IH16R6GNLh2Et4Q==
-  /@types/connect/3.4.33:
-    dependencies:
-      '@types/node': 14.11.7
-    dev: true
-    resolution:
-      integrity: sha512-2+FrkXY4zllzTNfJth7jOqEHC+enpLeGslEhpnTAkg21GkRrWV4SsAtqchtT4YS9/nODBU2/ZfsBY2X4J/dX7A==
-  /@types/express-serve-static-core/4.17.13:
-    dependencies:
-      '@types/node': 14.11.7
-      '@types/qs': 6.9.5
-      '@types/range-parser': 1.2.3
-    dev: true
-    resolution:
-      integrity: sha512-RgDi5a4nuzam073lRGKTUIaL3eF2+H7LJvJ8eUnCI0wA6SNjXc44DCmWNiTLs/AZ7QlsFWZiw/gTG3nSQGL0fA==
-  /@types/express-session/1.17.0:
-    dependencies:
-      '@types/express': 4.17.8
-      '@types/node': 14.11.7
-    dev: true
-    resolution:
-      integrity: sha512-OQEHeBFE1UhChVIBhRh9qElHUvTp4BzKKHxMDkGHT7WuYk5eL93hPG7D8YAIkoBSbhNEY0RjreF15zn+U0eLjA==
-  /@types/express/4.17.8:
-    dependencies:
-      '@types/body-parser': 1.19.0
-      '@types/express-serve-static-core': 4.17.13
-      '@types/qs': 6.9.5
-      '@types/serve-static': 1.13.5
-    dev: true
-    resolution:
-      integrity: sha512-wLhcKh3PMlyA2cNAB9sjM1BntnhPMiM0JOBwPBqttjHev2428MLEB4AYVN+d8s2iyCVZac+o41Pflm/ZH5vLXQ==
-  /@types/ioredis/4.17.4:
-    dependencies:
-      '@types/node': 14.11.7
-    dev: true
-    resolution:
-      integrity: sha512-kb5+thmQJ7HHyOAnCOeqRJlF2fyvadHghnLLLKZzCNyShStJeIQtNGGDjA30gWqj6UFSDAWBfGEMKrFDrGfvzQ==
   /@types/json-schema/7.0.6:
     dev: true
     resolution:
@@ -439,10 +384,6 @@ packages:
     dev: false
     resolution:
       integrity: sha1-7ihweulOEdK4J7y+UnC86n8+ce4=
-  /@types/mime/2.0.3:
-    dev: true
-    resolution:
-      integrity: sha512-Jus9s4CDbqwocc5pOAnh8ShfrnMcPHuJYzVcSUU7lrh8Ni5HuIqX3oilL86p3dlTrk0LzHRCgA/GQ7uNCw6l2Q==
   /@types/mongodb/3.5.27:
     dependencies:
       '@types/bson': 4.0.2
@@ -465,27 +406,6 @@ packages:
     dev: true
     resolution:
       integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
-  /@types/qs/6.9.5:
-    dev: true
-    resolution:
-      integrity: sha512-/JHkVHtx/REVG0VVToGRGH2+23hsYLHdyG+GrvoUGlGAd0ErauXDyvHtRI/7H7mzLm+tBCKA7pfcpkQ1lf58iQ==
-  /@types/range-parser/1.2.3:
-    dev: true
-    resolution:
-      integrity: sha512-ewFXqrQHlFsgc09MK5jP5iR7vumV/BYayNC6PgJO2LPe8vrnNFyjQjSppfEngITi0qvfKtzFvgKymGheFM9UOA==
-  /@types/redis/2.8.27:
-    dependencies:
-      '@types/node': 14.11.7
-    dev: true
-    resolution:
-      integrity: sha512-RRHarqPp3mgqHz+qzLVuQCJAIVaB3JBaczoj24QVVYu08wiCmB8vbOeNeK9lIH+pyT7+R/bbEPghAZZuhbZm0g==
-  /@types/serve-static/1.13.5:
-    dependencies:
-      '@types/express-serve-static-core': 4.17.13
-      '@types/mime': 2.0.3
-    dev: true
-    resolution:
-      integrity: sha512-6M64P58N+OXjU432WoLLBQxbA0LRGBCRm7aAGQJ+SMC1IMl0dgRVi9EFfoDcS2a7Xogygk/eGN94CfwU9UF7UQ==
   /@types/tap/14.10.1:
     dependencies:
       '@types/node': 14.11.7
@@ -1197,12 +1117,6 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-aMKprgk5YhBNyH25hj8wGt2+D52Sw1DRRIzqBwLp2Ya9mFmY8KPvvtvmna8SxVR9JMZ4kzMD68N22vlaRpkeFA==
-  /connect-redis/5.0.0:
-    dev: false
-    engines:
-      node: '>=10.0.0'
-    resolution:
-      integrity: sha512-R4nTW5uXeG5s6zr/q4abmtcdloglZrL/A3cpa0JU0RLFJU4mTR553HUY8OZ0ngeySkGDclwQ5xmCcjjKkxdOSg==
   /console-control-strings/1.1.0:
     dev: false
     resolution:
@@ -1801,26 +1715,42 @@ packages:
     dev: false
     resolution:
       integrity: sha512-+se+kNPFDE49JCiBYQrfPfchcW9s8BXjCqP5ijuYpbydTcMlo9pnyd8tyxLi43SIXBmeTBkB1CjklmD7nlHsXg==
+  /fastify-cookie/4.2.0:
+    dependencies:
+      cookie: 0.4.1
+      cookie-signature: 1.1.0
+      fastify-plugin: 3.0.0
+    dev: false
+    resolution:
+      integrity: sha512-BZjgIA143YevEjAwJmqfnJJ5hIonkl49nLBjRLbErFKor/Rd8DZ0xnHnmxSk8xUhnr5g5vxKHnH3/dQt+11cpg==
   /fastify-error/0.2.0:
     dev: false
     resolution:
       integrity: sha512-zabxsBatj59ROG0fhP36zNdc5Q1/eYeH9oSF9uvfrurZf8/JKfrJbMcIGrLpLWcf89rS6L91RHWm20A/X85hcA==
+  /fastify-formbody/5.0.0:
+    dependencies:
+      fastify-plugin: 2.3.4
+    resolution:
+      integrity: sha512-W79/hq6xGyV4lFsgt+qgKHPorGu4RzAhFQ5GKXI0T8DbkEMx+7gjFAD2y+q194vMMiIvMhuE7j6JyCEZVMOHYw==
   /fastify-plugin/2.3.4:
     dependencies:
       semver: 7.3.2
     dev: false
     resolution:
       integrity: sha512-I+Oaj6p9oiRozbam30sh39BiuiqBda7yK2nmSPVwDCfIBlKnT8YB3MY+pRQc2Fcd07bf6KPGklHJaQ2Qu81TYQ==
-  /fastify-session/5.2.0:
-    dependencies:
-      cookie-signature: 1.1.0
-      fastify-plugin: 2.3.4
-      uid-safe: 2.1.5
+  /fastify-plugin/3.0.0:
     dev: false
-    engines:
-      node: '>= 10.13.0'
     resolution:
-      integrity: sha512-jTDdV8dxDjU0WlCoacbDO06Be4s/Wi6GWq4SRWppgBNHIQj/QcNhDT6zNn4ZL9DDPRLOdDHsMV0rws6YYxb3Gw==
+      integrity: sha512-ZdCvKEEd92DNLps5n0v231Bha8bkz1DjnPP/aEz37rz/q42Z5JVLmgnqR4DYuNn3NXAO3IDCPyRvgvxtJ4Ym4w==
+  /fastify-secure-session/2.3.0:
+    dependencies:
+      fastify-cookie: 4.2.0
+      fastify-plugin: 2.3.4
+      sodium-native: 3.2.0
+    dev: false
+    hasBin: true
+    resolution:
+      integrity: sha512-qJe2+tU7tbUxp4toec22vrxW9WTa6jdu62+5GROA6z2nc1uncYJBHnzwFtH/oiO1tYsW+9Ec8xfn4DJkG74myQ==
   /fastify-warning/0.2.0:
     dev: false
     resolution:
@@ -2357,6 +2287,10 @@ packages:
   /ini/1.3.5:
     resolution:
       integrity: sha512-RZY5huIKCMRWDUqZlEi72f/lmXKMvuszcMBduliQ3nnWbx9X/ZBQO7DijMEYS9EhHBb2qacRUMtC7svLwe0lcw==
+  /ini/1.3.8:
+    dev: false
+    resolution:
+      integrity: sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==
   /ipaddr.js/1.9.1:
     dev: false
     engines:
@@ -3087,6 +3021,11 @@ packages:
     dev: false
     resolution:
       integrity: sha512-Yt3384If5H6BYGVHiHwTL+99OzJKHhgp82S8/dktEK73T26BazdgZ4JZh92xSVtGNJvz9UbXdNAc5hcrXV42vw==
+  /node-gyp-build/4.2.3:
+    dev: false
+    hasBin: true
+    resolution:
+      integrity: sha512-MN6ZpzmfNCRM+3t57PTJHgHyw/h4OWnZ6mR8P5j/uZtqQr46RRuDE/P+g3n0YR/AiYXeWixZZzaip77gdICfRg==
   /node-modules-regexp/1.0.0:
     dev: true
     engines:
@@ -3722,12 +3661,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-RyYpQ6Q5/drsJyOhrWHYMWTedvjTIat+FTwv0K4yoUxzvekw2aRHMQJLlnvt8UantkZg2++bEzD9EdxXqkWf4A==
-  /random-bytes/1.0.0:
-    dev: false
-    engines:
-      node: '>= 0.8'
-    resolution:
-      integrity: sha1-T2ih3Arli9P7lYSMMDJNt11kNgs=
   /rc/1.2.8:
     dependencies:
       deep-extend: 0.6.0
@@ -3813,35 +3746,6 @@ packages:
     dev: false
     resolution:
       integrity: sha1-iYS1gV2ZyyIEacme7v/jiRPmzAs=
-  /redis-commands/1.6.0:
-    dev: false
-    resolution:
-      integrity: sha512-2jnZ0IkjZxvguITjFTrGiLyzQZcTvaw8DAaCXxZq/dsHXz7KfMQ3OUJy7Tz9vnRtZRVz6VRCPDvruvU8Ts44wQ==
-  /redis-errors/1.2.0:
-    dev: false
-    engines:
-      node: '>=4'
-    resolution:
-      integrity: sha1-62LSrbFeTq9GEMBK/hUpOEJQq60=
-  /redis-parser/3.0.0:
-    dependencies:
-      redis-errors: 1.2.0
-    dev: false
-    engines:
-      node: '>=4'
-    resolution:
-      integrity: sha1-tm2CjNyv5rS4pCin3vTGvKwxyLQ=
-  /redis/3.0.2:
-    dependencies:
-      denque: 1.4.1
-      redis-commands: 1.6.0
-      redis-errors: 1.2.0
-      redis-parser: 3.0.0
-    dev: false
-    engines:
-      node: '>=6'
-    resolution:
-      integrity: sha512-PNhLCrjU6vKVuMOyFu7oSP296mwBkcE6lrAjruBYG5LgdSqtRBoVQIylrMyVZD/lkF24RSNNatzvYag6HRBHjQ==
   /regexp-clone/1.0.0:
     dev: false
     resolution:
@@ -4131,6 +4035,14 @@ packages:
     dev: false
     resolution:
       integrity: sha1-CzpmK10Ewxd7GSa+qCsD+Dei70E=
+  /sodium-native/3.2.0:
+    dependencies:
+      ini: 1.3.8
+      node-gyp-build: 4.2.3
+    dev: false
+    requiresBuild: true
+    resolution:
+      integrity: sha512-8aq/vQSegLwsRch8Sb/Bpf9aAqlNe5dp0+NVhb9UjHv42zDZ0D5zX3wBRUbXK9Ejum9uZE6DUgT4vVLlUFRBWg==
   /sonic-boom/1.3.0:
     dependencies:
       atomic-sleep: 1.0.0
@@ -4693,14 +4605,6 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-BLbiRkiBzAwsjut4x/dsibSTB6yWpwT5qWmC2OfuCg3GgVQCSgMs4vEctYPhsaGtd0AeuuHMkjZ2h2WG8MSzRw==
-  /uid-safe/2.1.5:
-    dependencies:
-      random-bytes: 1.0.0
-    dev: false
-    engines:
-      node: '>= 0.8'
-    resolution:
-      integrity: sha512-KPHm4VL5dDXKz01UuEd88Df+KzynaohSL9fBh096KWAxSKZQDI2uBrVqtvRM4rwrIrRRKsdLNML/lnaaVSRioA==
   /unc-path-regex/0.1.2:
     dev: false
     engines:
@@ -4999,16 +4903,13 @@ packages:
 specifiers:
   '@types/bcrypt': ^3.0.0
   '@types/config': ^0.0.36
-  '@types/connect-redis': ^0.0.14
   '@types/mongoose': ^5.7.36
   '@types/node': ^14.11.5
-  '@types/redis': ^2.8.27
   '@types/tap': ^14.10.1
   '@typescript-eslint/eslint-plugin': ^4.4.0
   '@typescript-eslint/parser': ^4.4.0
   bcrypt: ^5.0.0
   config: ^3.3.2
-  connect-redis: ^5.0.0
   date-fns: ^2.16.1
   eslint: ^7.10.0
   eslint-config-prettier: ^6.12.0
@@ -5018,8 +4919,9 @@ specifiers:
   fastify-autoload: ^3.0.2
   fastify-cli: ^2.3.0
   fastify-cookie: ^4.1.0
+  fastify-formbody: ^5.0.0
   fastify-plugin: ^2.3.0
-  fastify-session: ^5.2.0
+  fastify-secure-session: ^2.3.0
   husky: ^4.3.0
   joi: ^17.2.1
   mongoose: ^5.10.8
@@ -5027,7 +4929,6 @@ specifiers:
   nodemon: ^2.0.4
   pino-pretty: ^4.3.0
   prettier: ^2.1.2
-  redis: ^3.0.2
   tap: ^14.10.8
   ts-node: ^9.0.0
   tsconfig-paths: ^3.9.0
