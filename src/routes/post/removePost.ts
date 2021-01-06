@@ -1,16 +1,15 @@
-import POST from '@src/db/models/post';
 import { FastifyInstance } from 'fastify';
 
 export default async function (fastify: FastifyInstance): Promise<void> {
-  fastify.addHook('preHandler', (request, reply) => fastify.helpers.isAuthenticated(request, reply));
+  fastify.addHook('onRequest', (request, reply, next) => fastify.helpers.isAuthenticated(request, reply, next));
   fastify.delete('/', async (request, reply) => {
     try {
       const { slug } = request.body as RequestBody;
-      const post = await POST.findOne({ slug });
+      const post = await fastify.mongoClientModels.Post.findOne({ slug });
       if (!post) {
         return reply.status(404).send({ msg: 'Not found' });
       }
-      if (request.session.userId !== post.author) {
+      if (request.session.get('userId') !== post.author) {
         return reply.status(401).send({ msg: 'Unauthorized' });
       }
       return reply.status(200).send({ msg: 'ok' });

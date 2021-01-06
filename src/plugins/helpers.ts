@@ -1,14 +1,12 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyInstance, FastifyReply, FastifyRequest, HookHandlerDoneFunction } from 'fastify';
 import fp from 'fastify-plugin';
 
 class Helpers {
-  async isAuthenticated(request: FastifyRequest, reply: FastifyReply) {
-    if (!request.session.authenticated) {
-      reply.status(401).send({ msg: 'unauthenticated' });
-      return;
-    } else {
-      return;
+  isAuthenticated(request: FastifyRequest, reply: FastifyReply, next: HookHandlerDoneFunction) {
+    if (request.session.get('isAuthenticated') !== true) {
+      reply.status(401).send({ msg: 'authentication ERROR' });
     }
+    next();
   }
 }
 
@@ -16,7 +14,7 @@ export default fp(
   async function (fastify: FastifyInstance) {
     fastify.decorate('helpers', new Helpers());
   },
-  { name: 'helpers' },
+  { name: 'helpers', dependencies: ['AppStatus'] },
 );
 
 declare module 'fastify' {

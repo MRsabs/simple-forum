@@ -1,6 +1,6 @@
 import { IReply } from '@src/db/models/comment';
-import POST, { IPost } from '@src/db/models/post';
-import USER, { IUser } from '@src/db/models/user';
+import { IPost } from '@src/db/models/post';
+import { IUser } from '@src/db/models/user';
 import { FastifyInstance, FastifyLoggerInstance } from 'fastify';
 import Joi from 'joi';
 
@@ -11,14 +11,16 @@ const commentValidition = Joi.object({
 });
 
 class Commenthandler {
+  fastify: FastifyInstance;
   private userId: string;
   private body: RequestBody;
   private log: FastifyLoggerInstance;
   private post!: IPost;
   errorReply!: { status: number; msg: string };
-  constructor(body: RequestBody, userId: string, log: FastifyLoggerInstance) {
+  constructor(fastify: FastifyInstance, body: RequestBody, userId: string) {
+    this.fastify = fastify;
     this.body = body;
-    this.log = log;
+    this.log = fastify.log;
     this.userId = userId;
   }
 
@@ -34,7 +36,7 @@ class Commenthandler {
   }
 
   async isPostExist(): Promise<boolean> {
-    const post = await POST.findOne({ slug: this.body.slug });
+    const post = await this.fastify.mongoClientModels.Post.findOne({ slug: this.body.slug });
     if (!post) {
       this.errorReply = {
         msg: 'Not found',
@@ -48,7 +50,7 @@ class Commenthandler {
   }
   private async getCommenterData(): Promise<false | IUser> {
     try {
-      const user = await USER.findOne({ _id: this.userId });
+      const user = await this.fastify.mongoClientModels.User.findOne({ _id: this.userId });
       if (user) {
         return user;
       } else {
@@ -125,9 +127,9 @@ class Commenthandler {
 }
 
 export default async function (fastify: FastifyInstance): Promise<void> {
-  fastify.addHook('preHandler', (request, reply) => fastify.helpers.isAuthenticated(request, reply));
+  fastify.addHook('onRequest', (request, reply, next) => fastify.helpers.isAuthenticated(request, reply, next));
   fastify.post('/', async (request, reply) => {
-    const handler = new Commenthandler(request.body as RequestBody, request.session.userId, fastify.log);
+    const handler = new Commenthandler(fastify, request.body as RequestBody, request.session.get('userId'));
     if (!(await handler.isReplyValid())) {
       return reply.status(handler.errorReply.status).send({ msg: handler.errorReply.msg });
     }

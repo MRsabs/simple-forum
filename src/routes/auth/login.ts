@@ -1,4 +1,4 @@
-import USER, { IUser } from '@src/db/models/user';
+import { IUser } from '@src/db/models/user';
 import { FastifyInstance, FastifyLoggerInstance } from 'fastify';
 import Joi from 'joi';
 import bcrypt from 'bcrypt';
@@ -14,9 +14,11 @@ class LoginHandler {
   dbUser!: IUser | null;
   userId!: string;
   errorReply: { status: number; msg: string };
-  constructor(body: RequestBody, log: FastifyLoggerInstance) {
+  fastify: FastifyInstance;
+  constructor(fastify: FastifyInstance, body: RequestBody) {
+    this.fastify = fastify;
+    this.log = fastify.log;
     this.body = body;
-    this.log = log;
     this.errorReply = {
       status: 401,
       msg: 'Email or Password is incorrect',
@@ -56,7 +58,7 @@ class LoginHandler {
 
   async isUserExist(): Promise<boolean> {
     try {
-      this.dbUser = await USER.findOne({ email: this.body.email });
+      this.dbUser = await this.fastify.mongoClientModels.User.findOne({ email: this.body.email });
       if (this.dbUser) {
         return true;
       } else {
@@ -93,12 +95,12 @@ class LoginHandler {
 
 export default async function (fastify: FastifyInstance): Promise<void> {
   fastify.post('/login', async function (request, reply) {
-    const handler = new LoginHandler(request.body as RequestBody, fastify.log);
+    const handler = new LoginHandler(fastify, request.body as RequestBody);
     if (!(await handler.isOk())) {
       return reply.status(handler.errorReply.status).send({ msg: handler.errorReply.msg });
     }
-    request.session.userId = handler.userId;
-    request.session.authenticated = true;
+    request.session.set('userId', handler.userId);
+    request.session.set('isAuthenticated', true);
     const { username, avatar, _id, slug } = (handler.dbUser as IUser).toObject();
     return reply.status(200).send({
       username,
@@ -115,4 +117,6 @@ interface RequestBody {
 }
 
 // for testing
-export { LoginHandler };
+export const testable = {
+  LoginHandler,
+};

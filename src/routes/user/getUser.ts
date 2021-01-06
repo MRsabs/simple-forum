@@ -1,11 +1,10 @@
-import USER from '@src/db/models/user';
 import { FastifyInstance } from 'fastify';
 
 export default async function (fastify: FastifyInstance): Promise<void> {
   fastify.get('/:slug', async (request, reply) => {
     try {
       const { slug } = request.params as RequestBody;
-      const user = await USER.findOne({ slug });
+      const user = await fastify.mongoClient.models.User.findOne({ slug });
       if (!user) {
         return reply.status(404).send({ msg: 'Not found' });
       } else {

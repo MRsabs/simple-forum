@@ -1,4 +1,3 @@
-import POST from '@src/db/models/post';
 import { FastifyInstance, FastifyLoggerInstance } from 'fastify';
 import Joi from 'joi';
 
@@ -8,13 +7,15 @@ const postValidition = Joi.object({
 });
 
 class NewPostHandler {
+  fastify: FastifyInstance;
   private userId: string;
   private body: RequestBody;
   private log: FastifyLoggerInstance;
   errorReply!: { status: number; msg: string };
-  constructor(body: RequestBody, userId: string, log: FastifyLoggerInstance) {
+  constructor(fastify: FastifyInstance, body: RequestBody, userId: string) {
+    this.fastify = fastify;
     this.body = body;
-    this.log = log;
+    this.log = fastify.log;
     this.userId = userId;
   }
 
@@ -45,7 +46,7 @@ class NewPostHandler {
   isPostExist(): Promise<void> {
     return new Promise((resolve, reject) => {
       const slug = this.body.title.replace(/ /g, '-');
-      POST.findOne({ slug })
+      this.fastify.mongoClientModels.Post.findOne({ slug })
         .then((post) => {
           if (post) {
             this.errorReply = { status: 409, msg: 'Post already exists' };
@@ -65,7 +66,7 @@ class NewPostHandler {
   isPostSaved(): Promise<void> {
     return new Promise((resolve, reject) => {
       const slug = this.body.title.replace(/ /g, '-');
-      const post = new POST({ ...this.body, author: this.userId, slug });
+      const post = new this.fastify.mongoClientModels.Post({ ...this.body, author: this.userId, slug });
       post
         .save()
         .then(() => resolve())
@@ -79,9 +80,10 @@ class NewPostHandler {
 }
 
 export default async function (fastify: FastifyInstance): Promise<void> {
-  fastify.addHook('preHandler', (request, reply) => fastify.helpers.isAuthenticated(request, reply));
+  fastify.addHook('onRequest', (request, reply, next) => fastify.helpers.isAuthenticated(request, reply, next));
+
   fastify.post('/', async function (request, reply) {
-    const handler = new NewPostHandler(request.body as RequestBody, request.session.userId, fastify.log);
+    const handler = new NewPostHandler(fastify, request.body as RequestBody, request.session.get('userId'));
     if (!(await handler.isOk())) {
       return reply.status(handler.errorReply.status).send({ msg: handler.errorReply.msg });
     }

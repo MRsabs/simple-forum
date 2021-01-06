@@ -2,10 +2,13 @@ import app from './app';
 
 const fastify = app();
 
-fastify.ready((err) => {
-  if (err) {
-    fastify.log.error(err);
+const start = async () => {
+  try {
+    await fastify.ready();
+    fastify.AppStatus.start();
+  } catch (error) {
+    fastify.log.error(error);
     process.exit(1);
   }
-  fastify.AppStatus.start();
-});
+};
+start();

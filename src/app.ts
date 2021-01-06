@@ -1,13 +1,27 @@
 import fastify, { FastifyInstance, FastifyServerOptions } from 'fastify';
 import path from 'path';
 import AutoLoad from 'fastify-autoload';
-import fastifyCookie from 'fastify-cookie';
+import fastifySecureSession from 'fastify-secure-session';
+import fastifyFormbody from 'fastify-formbody';
+import config from 'config';
 
 export default function (): FastifyInstance {
   const opts = envConfig();
   const app = fastify(opts);
   app.log.info(`in ${process.env.NODE_ENV} mode`);
-  app.register(fastifyCookie);
+  if (process.env.NODE_ENV === 'development') {
+    app.register(fastifyFormbody);
+  }
+  app.register(fastifySecureSession, {
+    cookieName: 'sid',
+    key: Buffer.from(config.get('SESSION_SECRET') as string, 'hex'),
+    cookie: {
+      sameSite: true,
+      path: '/',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production' ? true : false,
+    },
+  });
   app.register(AutoLoad, {
     dir: path.join(__dirname, 'plugins'),
     options: Object.assign({}, opts),

@@ -1,10 +1,9 @@
-import { mongoClient } from '@src/plugins/mongoClient';
 import { Document, Schema, Types } from 'mongoose';
 import { nanoid } from 'nanoid';
 import { getUnixTime } from 'date-fns';
 import CommentSchema, { IReply } from './comment';
 
-const PostSchema: Schema = new Schema({
+export const PostSchema: Schema = new Schema({
   _id: {
     type: String,
     default: () => nanoid(),
@@ -37,9 +36,7 @@ const PostSchema: Schema = new Schema({
   },
 });
 
-const POST = mongoClient.model<IPost>('Post', PostSchema);
-
-export default POST;
+// const POST = mongoClient.model<IPost>('Post', PostSchema);
 
 export interface IPost extends Document {
   author: string;

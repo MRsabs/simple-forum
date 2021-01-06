@@ -1,7 +1,8 @@
-import POST, { IPost } from '@src/db/models/post';
+import { IPost } from '@src/db/models/post';
 import { FastifyInstance, FastifyLoggerInstance } from 'fastify';
 
 class GetPostHandler {
+  fastify: FastifyInstance;
   params: RequestParams;
   log: FastifyLoggerInstance;
   post!: IPost;
@@ -10,9 +11,10 @@ class GetPostHandler {
     status: number;
     data: PostData;
   };
-  constructor(params: RequestParams, logger: FastifyLoggerInstance) {
+  constructor(fastify: FastifyInstance, params: RequestParams) {
+    this.fastify = fastify;
     this.params = params;
-    this.log = logger;
+    this.log = fastify.log;
   }
 
   async isOk(): Promise<boolean> {
@@ -29,7 +31,7 @@ class GetPostHandler {
     return new Promise(async (resolve, reject) => {
       try {
         const { slug } = this.params;
-        const post = await POST.findOne({ slug });
+        const post = await this.fastify.mongoClientModels.Post.findOne({ slug });
         if (!post) {
           this.errorReply = {
             status: 404,
@@ -80,7 +82,7 @@ class GetPostHandler {
 
 export default async function (fastify: FastifyInstance): Promise<void> {
   fastify.get('/:slug', async function (request, reply) {
-    const handler = new GetPostHandler(request.params as RequestParams, fastify.log);
+    const handler = new GetPostHandler(fastify, request.params as RequestParams);
     if (!(await handler.isOk())) {
       return reply.status(handler.errorReply.status).send({ msg: handler.errorReply.msg });
     } else {
