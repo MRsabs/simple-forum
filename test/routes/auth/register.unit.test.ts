@@ -76,6 +76,19 @@ tap.test('Getting Ready', async (t) => {
       }
     });
 
+    await t.test('isUserSaved should fail', (t) => {
+      // @ts-ignore
+      const d = new RegisterHandler(fastify, { ...defultBody, password: null });
+      d.isUserSaved()
+        .then(() => {
+          t.fail('isUserSaved resolved');
+        })
+        .catch(() => {
+          t.pass();
+        })
+        .finally(() => t.end());
+    });
+
     await t.test('delete temp user', (t) => {
       fastify.mongoClient
         .model('User')
@@ -90,6 +103,7 @@ tap.test('Getting Ready', async (t) => {
         })
         .finally(() => t.end());
     });
+
     t.end();
   });
 });
