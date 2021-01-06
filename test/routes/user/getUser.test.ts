@@ -9,10 +9,6 @@ const defultBody = {
 };
 const fastify = buildFastify();
 fastify.ready().then(() => {
-  t.tearDown(() => {
-    fastify.mongoClient.close();
-  });
-
   t.test('register temp user', (t) => {
     fastify
       .inject()
@@ -39,18 +35,48 @@ fastify.ready().then(() => {
       .finally(() => t.end());
   });
 
+  t.test('user not found', (t) => {
+    fastify
+      .inject({
+        url: `user/notfound`,
+        method: 'GET',
+      })
+      .then((response) => t.deepEqual(response.statusCode, 404))
+      .catch((err) => {
+        t.fail(err);
+      })
+      .finally(() => t.end());
+  });
+
   t.test('delete temp user', (t) => {
     fastify.mongoClient
       .model('User')
       .findOneAndDelete({ email: defultBody.email })
       .then((user) => {
         if (!user) {
-          throw new Error('mongodb did not find the user');
+          t.fail('mongodb did not find the user');
         }
       })
       .catch((err) => {
-        throw err;
+        t.fail(err);
       })
       .finally(() => t.end());
+  });
+
+  t.test('mongoose fail to get user', (t) => {
+    fastify.mongoClient.close().then(() => {
+      fastify
+        .inject({
+          url: `user/notfound`,
+          method: 'GET',
+        })
+        .then((res) => {
+          t.deepEqual(res.statusCode, 500);
+        })
+        .catch(() => {
+          t.pass();
+        })
+        .finally(() => t.end());
+    });
   });
 });
