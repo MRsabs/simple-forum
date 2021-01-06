@@ -1,137 +1,126 @@
-import tap from 'tap';
-import { LoginHandler } from '@src/routes/auth/login';
+import t from 'tap';
+import { testable } from '@src/routes/auth/login';
 import buildFastify from '@app';
 
+const { LoginHandler } = testable;
+const defultRegisterBody = {
+  email: 'loginunittest@test.com',
+  username: 'loginunittest',
+  password: 'pass123',
+  repeatPassword: 'pass123',
+};
+const defultLoginBody = {
+  email: 'loginunittest@test.com',
+  password: 'pass123',
+};
 const fastify = buildFastify();
-
-tap.tearDown(async () => {
-  await fastify.mongoClient.close();
-  fastify.redisClient.end(true);
-});
-
-tap.test('isInputValid ', async (t) => {
-  const defultBody = {
-    email: 'loginunittest@test.com',
-    password: 'pass123',
-  };
-  await fastify.ready();
-  function isInputValid(opt?: { key: 'email' | 'password'; value: string }) {
-    const body = defultBody;
-    if (!opt) {
-      return new LoginHandler(body, fastify.log).isInputValid();
-    } else {
-      const { key, value } = opt;
-      body[key] = value;
-      return new LoginHandler(body, fastify.log).isInputValid();
-    }
-  }
-  t.deepEqual(isInputValid(), true, 'valid input');
-  t.deepEqual(isInputValid({ key: 'email', value: 'InvalidEmail.com' }), false, 'Invalid email');
-  t.deepEqual(isInputValid({ key: 'password', value: '' }), false, 'invalid password');
-  t.end();
-});
-
-tap.test('isUserExist', async (t) => {
-  const defultBody = {
-    email: 'loginunittest@test.com',
-    username: 'loginunittest',
-    password: 'pass123',
-    repeatPassword: 'pass123',
-  };
-  await fastify.ready();
-  await fastify.AppStatus.isAppReady();
+fastify.ready().then(() => {
   function loginHandler(opt?: { key: 'email' | 'password'; value: string }) {
-    const body = defultBody;
+    const body = { ...defultLoginBody };
     if (!opt) {
-      return new LoginHandler(body, fastify.log);
+      return new LoginHandler(fastify, body);
     } else {
       const { key, value } = opt;
       body[key] = value;
-      return new LoginHandler(body, fastify.log);
+      return new LoginHandler(fastify, body);
     }
   }
 
-  t.test('tesing for user that does not exist', async (t) => {
-    try {
-      const Exist = loginHandler();
-      const exists = await Exist.isUserExist();
-      if (exists) {
-        t.pass('ok user does exist');
-        t.end();
+  t.test('isInputValid ', (t) => {
+    function isInputValid(opt?: { key: 'email' | 'password'; value: string }) {
+      const body = { ...defultLoginBody };
+      if (!opt) {
+        return new LoginHandler(fastify, body).isInputValid();
       } else {
-        t.pass('failed user does not exist');
+        const { key, value } = opt;
+        body[key] = value;
+        return new LoginHandler(fastify, body).isInputValid();
       }
-    } catch (error) {
-      console.error(error);
-      t.fail('Promise failed');
-      t.end();
     }
+    t.deepEqual(isInputValid(), true);
+    t.deepEqual(isInputValid({ key: 'email', value: 'InvalidEmail.com' }), false);
+    t.deepEqual(isInputValid({ key: 'password', value: '' }), false);
+    t.end();
   });
 
-  // tesing for user that does exist
-  t.test('tesing for user that does exist', async (t) => {
-    try {
-      const response = await fastify.inject().post('/auth/register').body(defultBody).end();
-      if (response.statusCode !== 200) {
-        t.fail('user did not register');
-        t.end();
-      }
-      const Exist = loginHandler();
-      const exists = await Exist.isUserExist();
-      if (!exists) {
-        t.fail('failed user does exist');
-        t.end();
-      } else {
-        t.pass('ok user does not exist');
-      }
-    } catch (error) {
-      console.error(error);
-      t.fail('Promise failed');
-      t.end();
-    }
+  t.test('tesing for user that does not exist', (t) => {
+    const Exist = loginHandler();
+    Exist.isUserExist()
+      .then((exist) => {
+        if (exist) {
+          t.fail('user does exist');
+        }
+      })
+      .catch(() => {
+        t.pass();
+      })
+      .finally(() => t.end());
   });
 
-  t.test('delete temp user', async (t) => {
-    try {
-      const u = await fastify.mongoClient.model('User').findOneAndDelete({ username: 'loginunittest' });
-      if (!u) {
-        t.fail('temp user not Found');
-      } else {
-        t.pass('user did get deleted');
-      }
-    } catch (error) {
-      t.fail(error);
-    }
+  // group
+  t.test('register temp user', (t) => {
+    fastify
+      .inject()
+      .post('auth/register')
+      .body(defultRegisterBody)
+      .end()
+      .then((response) => {
+        t.deepEqual(response.statusCode, 200);
+      })
+      .catch((err) => {
+        t.fail(err);
+      })
+      .finally(() => t.end());
   });
 
-  // testing for mongose unable to find
+  t.test('tesing for user that does exist', (t) => {
+    const Exist = loginHandler();
+    Exist.isUserExist()
+      .then((exists) => {
+        if (exists) {
+          t.pass();
+        } else {
+          t.fail('user does not exist');
+        }
+      })
+      .catch((err) => {
+        t.fail(err);
+      })
+      .finally(() => t.end());
+  });
+
+  t.test('delete temp user', (t) => {
+    fastify.mongoClient
+      .model('User')
+      .findOneAndDelete({ username: 'loginunittest' })
+      .then((user) => {
+        if (!user) {
+          t.fail('temp user not Found');
+        }
+      })
+      .catch(() => {
+        t.pass();
+      })
+      .finally(() => t.end());
+  });
+
   t.test('testing for mongose unable to find', async (t) => {
-    try {
-      await fastify.mongoClient.close();
-      const Exist = loginHandler();
-      await Exist.isUserExist();
-      t.fail('Mongoose able to do a query');
-      t.end();
-    } catch (error) {
-      t.pass('ok Mongoose unable to do a query ');
-      t.end();
-    }
+    await fastify.mongoClient.close();
+    const Exist = loginHandler();
+    Exist.isUserExist()
+      .then(() => {
+        t.fail('mongoose should fail ');
+      })
+      .finally(() => t.end());
   });
 
-  t.test('testing for bcrypt unable to compare passwords', async (t) => {
-    try {
-      // @ts-ignore
-      const Exist = loginHandler({ key: 'password', value: undefined });
-      await Exist.isUserPasswordValid();
-      t.fail('bcrypt able to compare passwords');
-      t.end();
-    } catch (error) {
-      t.pass('ok bcrypt unable to compare passwords ');
-      t.end();
-    }
+  t.test('testing for bcrypt unable to compare passwords', (t) => {
+    // @ts-ignore
+    const Exist = loginHandler({ key: 'password', value: null });
+    Exist.isUserPasswordValid()
+      .catch(() => {
+        t.pass();
+      })
+      .finally(() => t.end());
   });
-
-  t.end();
 });
-
-tap.end();

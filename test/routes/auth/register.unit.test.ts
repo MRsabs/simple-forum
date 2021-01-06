@@ -2,80 +2,94 @@ import tap from 'tap';
 import { RegisterHandler } from '@src/routes/auth/register';
 import buildFastify from '@app';
 
-const fastify = buildFastify();
-
-tap.tearDown(async () => {
-  await fastify.mongoClient.close();
-  fastify.redisClient.end(true);
-});
-
-tap.test('isInputValid ', async (t) => {
-  const defultBody = {
-    email: 'registerunittest@test.com',
-    username: 'registerunittest',
-    password: 'pass123',
-    repeatPassword: 'pass123',
-  };
+tap.test('Getting Ready', async (t) => {
+  t.tearDown(async () => {
+    fastify.mongoClient.close();
+  });
+  const fastify = buildFastify();
   await fastify.ready();
-  function isInputValid(opt?: { key: 'email' | 'username' | 'password' | 'repeatPassword'; value: string }) {
-    const body = defultBody;
-    if (!opt) {
-      return new RegisterHandler(body, fastify.log).isInputValid();
-    } else {
-      const { key, value } = opt;
-      body[key] = value;
-      return new RegisterHandler(body, fastify.log).isInputValid();
-    }
-  }
-  t.resolves(async () => await isInputValid(), 'valid input');
-  t.rejects(async () => await isInputValid({ key: 'email', value: 'InvalidEmail.com' }), 'Invalid email');
-  t.rejects(async () => await isInputValid({ key: 'password', value: '' })), 'invalid password';
-  t.rejects(async () => await isInputValid({ key: 'username', value: '' }), 'invalid username');
-  t.rejects(async () => await isInputValid({ key: 'repeatPassword', value: '' }), 'invalid repeatPassword');
-  t.end();
-});
 
-tap.test('isUserSaved & isUserExist', async (t) => {
-  const defultBody = {
-    email: 'registerunittest@test.com',
-    username: 'registerunittest',
-    password: 'pass123',
-    repeatPassword: 'pass123',
-  };
-  await fastify.ready();
-  await fastify.AppStatus.isAppReady();
-  function isUserSaved() {
-    // @ts-ignore
-    const handler = new RegisterHandler(defultBody, fastify.log);
-    return handler;
-  }
-  try {
-    const Saved = isUserSaved();
-    const exists = await Saved.isUserExist();
-    if (exists) {
-      t.fail('failed user does exist');
-      t.end();
+  t.test('isInputValid ', (t) => {
+    const defultBody = {
+      email: 'registerunittest@test.com',
+      username: 'registerunittest',
+      password: 'pass123',
+      repeatPassword: 'pass123',
+    };
+    function isInputValid(opt?: { key: 'email' | 'username' | 'password' | 'repeatPassword'; value: string }) {
+      const body = defultBody;
+      if (!opt) {
+        return new RegisterHandler(fastify, body).isInputValid();
+      } else {
+        const { key, value } = opt;
+        body[key] = value;
+        return new RegisterHandler(fastify, body).isInputValid();
+      }
     }
-    await Saved.isUserSaved();
-  } catch (error) {
-    console.error(error);
-    t.fail('Promise failed');
+    t.resolves(async () => await isInputValid(), 'valid input');
+    t.rejects(async () => await isInputValid({ key: 'email', value: 'InvalidEmail.com' }), 'Invalid email');
+    t.rejects(async () => await isInputValid({ key: 'password', value: '' })), 'invalid password';
+    t.rejects(async () => await isInputValid({ key: 'username', value: '' }), 'invalid username');
+    t.rejects(async () => await isInputValid({ key: 'repeatPassword', value: '' }), 'invalid repeatPassword');
     t.end();
-  }
-  try {
-    const unSaved = isUserSaved();
-    const exists = await unSaved.isUserExist();
-    if (!exists) {
-      t.fail('failed user does not exist');
-      t.end();
-    }
-    await unSaved.isUserSaved();
-    t.fail('user did get saved');
-  } catch (error) {
-    t.pass(error);
-  }
-  await fastify.mongoClient.model('User').findOneAndDelete({ username: 'registerunittest' });
-  t.end();
-});
+  });
 
-tap.end();
+  t.test('isUserSaved & isUserExist', async (t) => {
+    const defultBody = {
+      email: 'registerunittest@test.com',
+      username: 'registerunittest',
+      password: 'pass123',
+      repeatPassword: 'pass123',
+    };
+    function isUserSaved() {
+      const handler = new RegisterHandler(fastify, defultBody);
+      return handler;
+    }
+
+    await t.test('should save new user', async (t) => {
+      try {
+        const Saved = isUserSaved();
+        const ext = await Saved.isUserExist();
+        if (ext) {
+          t.fail('failed user does exist');
+        } else {
+          await Saved.isUserSaved();
+        }
+      } catch (err) {
+        t.fail(err);
+      } finally {
+        t.end();
+      }
+    });
+
+    await t.test('should not save new user', async (t) => {
+      try {
+        const Saved = isUserSaved();
+        const ext = await Saved.isUserExist();
+        if (!ext) {
+          t.fail('failed user does not exist');
+        }
+      } catch (err) {
+        t.fail(err);
+      } finally {
+        t.end();
+      }
+    });
+
+    await t.test('delete temp user', (t) => {
+      fastify.mongoClient
+        .model('User')
+        .findOneAndDelete({ username: 'registerunittest' })
+        .then((exists) => {
+          if (!exists) {
+            t.fail('failed to delete user does not exist');
+          }
+        })
+        .catch((err) => {
+          t.fail(err);
+        })
+        .finally(() => t.end());
+    });
+    t.end();
+  });
+});

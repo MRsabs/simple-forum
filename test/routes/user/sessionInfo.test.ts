@@ -1,20 +1,19 @@
-import buildFastify from '../../src/app';
+import buildFastify from '../../../src/app';
 import t from 'tap';
 
 const fastify = buildFastify();
 fastify.ready().then(() => {
-  t.plan(2);
+  t.plan(1);
   t.tearDown(() => {
     fastify.mongoClient.close();
+    fastify.server.close();
   });
-
   fastify
     .inject()
-    .get('/')
+    .get('/user/session-info')
     .end()
     .then((response) => {
-      t.deepEqual(response.statusCode, 200);
-      t.deepEqual(JSON.parse(response.body), { msg: 'hello' });
+      t.deepEqual(response.statusCode, 404);
     })
     .catch((err) => {
       t.fail(err);

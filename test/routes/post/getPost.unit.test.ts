@@ -1,42 +1,23 @@
 import buildFastify from '@app';
 import { testables } from '@routes/post/getPost';
-import tap from 'tap';
+import t from 'tap';
+
+const { GetPostHandler } = testables;
 
 const fastify = buildFastify();
-
-tap.tearDown(async () => {
-  fastify.redisClient.end(true);
+fastify.ready().then(() => {
+  fastify.mongoClient.close().then(() => {
+    t.test('is post exist', (t) => {
+      const d = new GetPostHandler(fastify, { slug: 'test' }).isPostExist();
+      d.then(() => t.fail('should fail'));
+      d.catch(() => t.pass('ok'));
+      d.finally(() => t.end());
+    });
+    t.test('is post ready', (t) => {
+      const d = new GetPostHandler(fastify, { slug: 'test' }).isPostReady();
+      d.then(() => t.fail('should fail'));
+      d.catch(() => t.pass('ok'));
+      d.finally(() => t.end());
+    });
+  });
 });
-
-tap.test('Mongoose can not find post', async (t) => {
-  await fastify.ready();
-  await fastify.mongoClient.close();
-  const { GetPostHandler } = testables;
-  const handler = new GetPostHandler({ slug: 'test' }, fastify.log);
-  try {
-    await handler.isPostExist();
-    t.fail('post should not exist');
-    t.end();
-  } catch (error) {
-    t.deepEqual(handler.errorReply.status, 500);
-    t.deepEqual(handler.errorReply.msg, 'Something went wrong');
-    t.end();
-  }
-});
-
-tap.test('Mongoose can not populate', async (t) => {
-  await fastify.ready();
-  const { GetPostHandler } = testables;
-  const handler = new GetPostHandler({ slug: 'test' }, fastify.log);
-  try {
-    await handler.isPostReady();
-    t.fail('post should not exist');
-    t.end();
-  } catch (error) {
-    t.deepEqual(handler.errorReply.status, 500);
-    t.deepEqual(handler.errorReply.msg, 'Something went wrong');
-    t.end();
-  }
-});
-
-tap.end();
