@@ -27,6 +27,19 @@ fastify.ready().then(() => {
   });
 
   t.test('add a post', async (t) => {
+    await t.test('authentication ERROR', async (t) => {
+      const addPost = await fastify.inject().post('/post').body({}).end();
+      t.deepEqual(addPost.statusCode, 401, addPost.body);
+      t.deepEqual(JSON.parse(addPost.body), { msg: 'authentication ERROR' }, addPost.body);
+      t.end();
+    });
+
+    await t.test('get session', async (t) => {
+      const addPost = await fastify.inject().get('/user/session-info').cookies({ sid: cookie }).body({}).end();
+      t.deepEqual(addPost.statusCode, 200, addPost.body);
+      t.end();
+    });
+
     await t.test('adding invalid post', async (t) => {
       const addPost = await fastify.inject().post('/post').cookies({ sid: cookie }).body({}).end();
       t.deepEqual(addPost.statusCode, 400, addPost.body);
@@ -44,6 +57,18 @@ fastify.ready().then(() => {
       t.deepEqual(addPost.statusCode, 200, addPost.body);
       t.deepEqual(JSON.parse(addPost.body), { msg: 'ok' }, addPost.body);
       t.end();
+    });
+
+    t.test('GET posts', (t) => {
+      fastify
+        .inject()
+        .get('/explore')
+        .query({ load: 0 })
+        .end()
+        .then((res) => {
+          t.deepEqual(res.statusCode, 200);
+        })
+        .finally(() => t.end());
     });
 
     t.test('post already exist', async (t) => {
@@ -160,24 +185,24 @@ fastify.ready().then(() => {
       t.end();
     });
 
-    // await t.test('Mongoose failed', async (t) => {
-    //   try {
-    //     await fastify.mongoClient.model('User').findOneAndDelete({ username: 'posttest' });
-    //     await fastify.mongoClient.dropCollection('posts');
-    //     await fastify.mongoClient.close();
-    //     const removePost = await fastify
-    //       .inject()
-    //       .delete('/post')
-    //       .cookies({ sid: cookie })
-    //       .body({ slug: 'post-test-title' })
-    //       .end();
-    //     t.deepEqual(removePost.statusCode, 500, removePost.body);
-    //     t.deepEqual(JSON.parse(removePost.body), { msg: 'Something went wrong' }, removePost.body);
-    //     t.end();
-    //   } catch (error) {
-    //     t.fail(error);
-    //     t.end();
-    //   }
-    // });
+    await t.test('Mongoose failed', async (t) => {
+      try {
+        await fastify.mongoClient.model('User').findOneAndDelete({ username: 'posttest' });
+        await fastify.mongoClient.dropCollection('posts');
+        await fastify.mongoClient.close();
+        const removePost = await fastify
+          .inject()
+          .delete('/post')
+          .cookies({ sid: cookie })
+          .body({ slug: 'post-test-title' })
+          .end();
+        t.deepEqual(removePost.statusCode, 500, removePost.body);
+        t.deepEqual(JSON.parse(removePost.body), { msg: 'Something went wrong' }, removePost.body);
+        t.end();
+      } catch (error) {
+        t.fail(error);
+        t.end();
+      }
+    });
   });
 });
