@@ -2,6 +2,7 @@ import { Document, Schema, Types } from 'mongoose';
 import { nanoid } from 'nanoid';
 import { getUnixTime } from 'date-fns';
 import CommentSchema, { IReply } from './comment';
+import { IUser } from './user';
 
 export const PostSchema: Schema = new Schema({
   _id: {
@@ -39,7 +40,7 @@ export const PostSchema: Schema = new Schema({
 // const POST = mongoClient.model<IPost>('Post', PostSchema);
 
 export interface IPost extends Document {
-  author: string;
+  author: IUser;
   content: string;
   votes: number;
   createdAt: number;
